@@ -82,13 +82,13 @@ class AliTPCDcalibRes: public TNamed
   struct dtc_t
   {
     Int_t t;        // time stamp
-    Double32_t dyR; //[-15.,15.,14] 
+    Double32_t dyR; //[-15.,15.,14]
     Double32_t dzR; //[-15.,15.,14]
-    Double32_t dyC; //[-15.,15.,14] 
+    Double32_t dyC; //[-15.,15.,14]
     Double32_t dzC; //[-15.,15.,14]
     Double32_t q2pt;//[-3,3,14]
     Double32_t tgLam;//[-2.,2.,14]
-    Double32_t tgSlp;//[-2,2,14] 
+    Double32_t tgSlp;//[-2,2,14]
     Float_t x;  //[80,160,14]
     Float_t y; //[-50,50,14]
     Float_t z; //[-250,250,14]
@@ -112,7 +112,7 @@ class AliTPCDcalibRes: public TNamed
     //
     bres_t() {memset(this,0,sizeof(bres_t));}
   };
- 
+
   struct delta_t { // structure to organize the input from delta trees
     TVectorF *vecDYTRD,*vecDZTRD,*vecDYITS,*vecDZITS,*vecDYTOF,*vecDZTOF,*vecZ,*vecR,*vecSec,*vecPhi;
     AliExternalTrackParam* param;
@@ -124,7 +124,7 @@ class AliTPCDcalibRes: public TNamed
     //
     delta_t() {memset(this,0,sizeof(delta_t));}
   };
-  
+
   struct dcTst_t {  // struct for distortion/correction check
     Double32_t xyz[3];
     Double32_t dxyz[4]; // [-20.,20.,15]
@@ -139,7 +139,7 @@ class AliTPCDcalibRes: public TNamed
 
   AliTPCDcalibRes(int run=0,Long64_t tmin=0,Long64_t tmax=9999999999,const char* resList=0);
   virtual ~AliTPCDcalibRes();
-  
+
   void CalibrateVDrift();
   void FitDrift();
   TProfile2D* GetHistoVDTimeInt()    const {return fHVDTimeInt;}
@@ -206,7 +206,7 @@ class AliTPCDcalibRes: public TNamed
 
   //------------------------------------ misc. stat. methods
   static Float_t FitPoly1Robust(int np, float* x, float* y, float* res, float* err, float ltmCut);
-  static void    FitCircle(int np, const float* x, const float* y, 
+  static void    FitCircle(int np, const float* x, const float* y,
 			   double &xc, double &yc, double &r, float* dy=0);
   static void    DiffToMA(int np, const float *y, const int winLR, float* diffMA);
   static int     DiffToLocLine(int np, const float* x, const float *y, const int nVoisin, float *diffY);
@@ -224,11 +224,11 @@ class AliTPCDcalibRes: public TNamed
   static Bool_t  GetSmooth1D(double xQuery,double valerr[2],int np,const double* x,const double* y,const double* err,
 			     double wKernel,int kType=kGaussianKernel,Bool_t usePoly2=kFALSE,
 			     Bool_t xIncreasing=kTRUE, Float_t maxD2Range=3.0);
-  static Bool_t  GradCorrCheb(const AliTPCChebCorr* cheb, int sect36, float x, float y, float z, 
+  static Bool_t  GradCorrCheb(const AliTPCChebCorr* cheb, int sect36, float x, float y, float z,
 			      float val[AliTPCDcalibRes::kResDim],
 			      float grad[AliTPCDcalibRes::kResDimG][AliTPCDcalibRes::kResDim]);
   //------------------------------------
-  
+
 
   Int_t   Smooth0(int isect);
   void    BringToActiveBoundary(int sect36, float xyz[3]) const;
@@ -240,13 +240,13 @@ class AliTPCDcalibRes: public TNamed
   void    SetKernelType(int tp=kEpanechnikovKernel, float bwX=2.1, float bwP=2.1, float bwZ=1.7,float scX=1.f,float scP=1.f,float scZ=1.f);
   Bool_t  GetSmoothPol2(int i)                              const {return fSmoothPol2[i];}
   void    SetSmoothPol2(int i,Bool_t v=kTRUE)                     {fSmoothPol2[i] = v;}
-  //  
+  //
   void    CreateCorrectionObject();
   void    CreateDistortionObject();
   void    InitBinning();
   Int_t   GetXBin(float x);
   static  Int_t  GetRowID(float x);
-  
+
   Bool_t  FindVoxelBin(int sectID, float x, float y, float z, UChar_t bin[kVoxHDim],float voxVars[kVoxHDim]);
   TH1F*   GetEventsRateHisto()          const {return fEvRateH;}
   TH1F*   GetTracksRateHisto()          const {return fTracksRate;}
@@ -337,10 +337,10 @@ class AliTPCDcalibRes: public TNamed
   Int_t    GetMaxBadXBinsToCover()         const {return fMaxBadXBinsToCover;}
   Int_t    GetMinGoodXBinsToCover()        const {return fMinGoodXBinsToCover;}
   Int_t    GetMaxBadRowsPerSector()        const {return fMaxBadRowsPerSector;}
-  
+
   void     SetMinValidVoxFracDrift(float v=0.7)   {fMinValidVoxFracDrift = v;}
   void     SetMaxSigY(Float_t v=1.1)              {fMaxSigY = v;}
-  void     SetMaxSigZ(Float_t v=0.7)              {fMaxSigZ = v;}  
+  void     SetMaxSigZ(Float_t v=0.7)              {fMaxSigZ = v;}
   void     SetMaxBadXBinsToCover(int n=4)         {fMaxBadXBinsToCover = n;}
   void     SetMinGoodXBinsToCover(int n=2)        {fMinGoodXBinsToCover = n;}
   void     SetMaxBadRowsPerSector(float v=0.5)    {fMaxBadRowsPerSector = v;}
@@ -359,11 +359,11 @@ class AliTPCDcalibRes: public TNamed
 
   Int_t    GetRun()                         const {return fRun;}
   Long64_t GetTMin()                        const {return fTMin;}
-  Long64_t GetTMax()                        const {return fTMax;}  
+  Long64_t GetTMax()                        const {return fTMax;}
   Long64_t GetTMinGRP()                     const {return fTMinGRP;}
-  Long64_t GetTMaxGRP()                     const {return fTMaxGRP;}  
+  Long64_t GetTMaxGRP()                     const {return fTMaxGRP;}
   Long64_t GetTMinCTP()                     const {return fTMinCTP;}
-  Long64_t GetTMaxCTP()                     const {return fTMaxCTP;}  
+  Long64_t GetTMaxCTP()                     const {return fTMaxCTP;}
   Int_t    GetNXBins()                      const {return fNXBins;}
   Int_t    GetNY2XBins()                    const {return fNY2XBins;}
   Int_t    GetNZ2XBins()                    const {return fNZ2XBins;}
@@ -403,7 +403,7 @@ class AliTPCDcalibRes: public TNamed
   Bool_t   GetCreateDistortion()            const {return fCreateDistortion;}
   void     SetCreateCorrection(Bool_t v=kTRUE)    {fCreateCorrection = v;}
   void     SetCreateDistortion(Bool_t v=kTRUE)    {fCreateDistortion = v;}
-  
+
   const TString& GetOCDBPath()              const {return fOCDBPath;}
   const TString& GetReisdualList()          const {return fResidualList;}
 
@@ -421,7 +421,7 @@ class AliTPCDcalibRes: public TNamed
   static TF1* GetMorphingFunctionXZY() { return fgMorphingFunctionXZY;}
   static Bool_t GetUseChebForTraining() { return fgUseChebForTraining; }
   static void   SetUseChebForTraining(Bool_t v) { fgUseChebForTraining = v; }
-  
+
  protected:
   //
   Bool_t   fInitDone;                               // init flag
@@ -429,7 +429,7 @@ class AliTPCDcalibRes: public TNamed
   Bool_t   fSwitchCache;                            // reset the cache when the reading mode is changing
   Bool_t   fFixAlignmentBug;                        // flag to apply the fix
   Bool_t   fApplyZt2Zc;                             // Apply fix for using Z_track instead of Z_cluster in the data
-  // --------------------------------Chebyshev object creation 
+  // --------------------------------Chebyshev object creation
   Int_t    fChebZSlicePerSide;                      // z partitions per side
   Int_t    fChebPhiSlicePerSector;                  // azimuthal partitions per sector
   Int_t    fNPCheb[kResDim][2];                     // cheb. nodes per slice
@@ -438,7 +438,7 @@ class AliTPCDcalibRes: public TNamed
   AliTPCChebCorr* fChebCorr;                        // final Chebyshev correction object
   AliTPCChebDist* fChebDist;                        // final Chebyshev distortion object
   // -------------------------------Task defintion
-  Int_t    fRun;     // run number 
+  Int_t    fRun;     // run number
   Int_t    fExtDet;  // external detectors to use
   Long64_t fTMin;    // time start for timebin
   Long64_t fTMax;    // time stop for timebin
@@ -507,11 +507,11 @@ class AliTPCDcalibRes: public TNamed
   Float_t*  fY2XBinsCenter; //[fNY2XBins] centers of bins in Y/X
   Float_t*  fY2XBinsDH;     //[fNY2XBins] widths/2 of bins in Y/X
   Float_t*  fY2XBinsDI;     //[fNY2XBins] inverse widths of bins in Y/X
-  
+
   Float_t  fDZ2X;          // Z2X bin size
   Float_t  fDX;            // X bin size
-  Float_t  fDZ2XI;         // inverse Z2X bin size 
-  Float_t  fDXI;           // inverse X bin size 
+  Float_t  fDZ2XI;         // inverse Z2X bin size
+  Float_t  fDXI;           // inverse X bin size
 
   Int_t    fNGVoxPerSector; // total number of geometrical voxels per sector
 
@@ -539,7 +539,7 @@ class AliTPCDcalibRes: public TNamed
   Long64_t fNBytesReadTot;  // total bytes read
   Int_t    fNTestTracks;                // number of control tracks in test stat
   Float_t  fEstTracksPerEvent;          // estimate for used tracks per selected event
-  Float_t  fTestStat[kCtrNbr][kCtrNbr]; // control statistics (fraction to fNTestTracks) 
+  Float_t  fTestStat[kCtrNbr][kCtrNbr]; // control statistics (fraction to fNTestTracks)
   TH1F*    fEvRateH;        // events per time histo
   TH1F*    fTracksRate;     // accepted tracks per second
   TH1F*    fTOFBCTestH;     // TOF BC (ns) for test fNTestTracks tracks
@@ -552,8 +552,8 @@ class AliTPCDcalibRes: public TNamed
   TGraph*  fLumiCTPGraph;           // lumi graph from CTP
   // ------------------------------VDrift correction
   TVectorD     *fVDriftParam;
-  TGraphErrors *fVDriftGraph;  
-  Float_t       fCorrTime;   //! 
+  TGraphErrors *fVDriftGraph;
+  Float_t       fCorrTime;   //!
   // -----------------------------Results of processing
   bres_t *fSectGVoxRes[kNSect2];         //! [fNGVoxPerSector] sectors results for geometric voxel
   TTree* fStatTree;                      //! tree with voxels statistics
@@ -576,14 +576,14 @@ class AliTPCDcalibRes: public TNamed
   float fArrPhi[kNPadRows];               //! cluster phi
   float fArrDY[kNPadRows];                //! cluster residual Y
   float fArrDZ[kNPadRows];                //! cluster residual Z
-  float fArrR[kNPadRows];                 //! cluster R 
-  float fArrX[kNPadRows];                 //! cluster X in sector coordinates (row) 
+  float fArrR[kNPadRows];                 //! cluster R
+  float fArrX[kNPadRows];                 //! cluster X in sector coordinates (row)
   float fArrYCl[kNPadRows];               //! cluster Y in sector coordinates
   float fArrZCl[kNPadRows];               //! cluster Z
   float fArrYTr[kNPadRows];               //! ref track Y in sector coordinates
   float fArrZTr[kNPadRows];               //! ref tracz Z in sector coordinates
   float fArrTgSlp[kNPadRows];             //! track inclination at padrow
-  int   fArrSectID[kNPadRows];            //! cluster sector id 
+  int   fArrSectID[kNPadRows];            //! cluster sector id
   //
   static AliTPCDcalibRes* fgUsedInstance; // interface instance to use for parameterization
   static AliTPCDcalibRes* fgUsedInstanceExt; // interface to extra instance if average of 2 maps to be used
@@ -597,7 +597,7 @@ class AliTPCDcalibRes: public TNamed
   static const float kMaxQ2Pt;
   static const float kMaxGaussStdDev; // don't evaluate gaussian outside this number of StdDevs
   //  static const float kMaxTgSlp;
-  //  static const float kMaxResid; // max allowed residual  
+  //  static const float kMaxResid; // max allowed residual
   static const float kMinX;   // min X to cover
   static const float kMaxX;   // max X to cover
   static const float kMaxZ2X;   // max z/x
@@ -619,7 +619,7 @@ class AliTPCDcalibRes: public TNamed
   static const char* kResName[];
   static const char* kModeName[];
   static const char* kExtDetName[];
-  
+
   static const Float_t kTPCRowX[]; // X of the pad-row
   static const Float_t kTPCRowDX[]; // pitch in X
 
@@ -627,7 +627,7 @@ class AliTPCDcalibRes: public TNamed
 };
 
 //________________________________________________________________
-inline Int_t AliTPCDcalibRes::GetXBinExact(float x) 
+inline Int_t AliTPCDcalibRes::GetXBinExact(float x)
 {
   // convert X to bin ID, following pad row widths
   if (fUniformBins[kVoxX]) {
@@ -706,7 +706,7 @@ inline Float_t AliTPCDcalibRes::GetDXI(int i)
 }
 
 //________________________________________________________________
-inline Int_t AliTPCDcalibRes::GetY2XBinExact(float y2x, int ix) 
+inline Int_t AliTPCDcalibRes::GetY2XBinExact(float y2x, int ix)
 {
   // get exact y2x bin at given x range
   if (y2x<-fMaxY2X[ix]) return -1;
@@ -722,7 +722,7 @@ inline Int_t AliTPCDcalibRes::GetY2XBinExact(float y2x, int ix)
 }
 
 //________________________________________________________________
-inline Int_t AliTPCDcalibRes::GetY2XBin(float y2x, int ix) 
+inline Int_t AliTPCDcalibRes::GetY2XBin(float y2x, int ix)
 {
   // get closest y2x bin at given x range
   int iy = GetY2XBinExact(y2x,ix);
@@ -746,7 +746,7 @@ inline Int_t AliTPCDcalibRes::GetZ2XBinExact(float z2x)
 }
 
 //________________________________________________________________
-inline Int_t AliTPCDcalibRes::GetZ2XBin(float z2x) 
+inline Int_t AliTPCDcalibRes::GetZ2XBin(float z2x)
 {
   // get closest z2x bin (z2x is positive for clusters not changing the side)
   int iz = GetZ2XBinExact(z2x);
@@ -762,7 +762,7 @@ inline Float_t AliTPCDcalibRes::GetZ2X(int iz)
   }
   // variable size
   return fZ2XBinsCenter[iz];
-  
+
 }
 
 //________________________________________________________________
@@ -839,7 +839,7 @@ inline Long64_t AliTPCDcalibRes::GetBin2Fill(const UChar_t binVox[kVoxDim], USho
 //_____________________________________________________
 inline UShort_t AliTPCDcalibRes::GetVoxGBin(const UChar_t bvox[kVoxDim]) const
 {
-  // index of geometrix voxel 
+  // index of geometrix voxel
   int binToFill = bvox[kVoxDim-1];
   for (int id=kVoxDim-1;id--;) binToFill += fNBProdSectG[id]*bvox[id];
   return binToFill;
@@ -848,7 +848,7 @@ inline UShort_t AliTPCDcalibRes::GetVoxGBin(const UChar_t bvox[kVoxDim]) const
 //_____________________________________________________
 inline UShort_t AliTPCDcalibRes::GetVoxGBin(int ix,int ip,int iz) const
 {
-  // index of geometrix voxel 
+  // index of geometrix voxel
   UChar_t bvox[kVoxDim];
   bvox[kVoxX] = ix; bvox[kVoxF] = ip; bvox[kVoxZ] = iz;
   return GetVoxGBin(bvox);
@@ -857,7 +857,7 @@ inline UShort_t AliTPCDcalibRes::GetVoxGBin(int ix,int ip,int iz) const
 //_____________________________________________________
 inline void AliTPCDcalibRes::GBin2Vox(UShort_t gbin, UChar_t bvox[kVoxDim]) const
 {
-  // index to geometrix voxel 
+  // index to geometrix voxel
   bvox[kVoxDim-1] = gbin%fNBins[kVoxDim-1];
   for (int id=kVoxDim-1;id--;) bvox[id] = (gbin/fNBProdSectG[id])%fNBins[id];
 }
@@ -870,7 +870,7 @@ inline void AliTPCDcalibRes::SetTMinMax(Long64_t tmin, Long64_t tmax) {
   if (fTMin>=fTMax) {
     fTMin = 0;
     fTMax = 9999999999;
-  } 
+  }
 }
 
 #endif
