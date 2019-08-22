@@ -204,6 +204,9 @@ class AliTPCDcalibRes: public TNamed
 
   const char* GetVoxResFileName() const {return Form("%sTree.root",kResOut);}
 
+  void DumpResults(int iSec);
+  void WriteDebugTree();
+
   //------------------------------------ misc. stat. methods
   static Float_t FitPoly1Robust(int np, float* x, float* y, float* res, float* err, float ltmCut);
   static void    FitCircle(int np, const float* x, const float* y,
@@ -561,6 +564,11 @@ class AliTPCDcalibRes: public TNamed
   TFile* fTmpFile[kNSect2];              //! file for fTmpTree
   THnF*  fStatHist[kNSect2];             //! histos for statistics bins
   TNDArrayT<float> *fArrNDStat[kNSect2]; //! alias arrays for fast access to fStatHist
+
+  TFile* fFileVoxResOut;  //! file for debug output with voxel results
+  TTree* fTreeVoxResOut;  //! debug tree
+  bres_t fVoxResOut;      //! object used for output
+  bres_t* fVoxResOutPtr;  //! pointer to output object
   //
   // ----------------------------data exchange structures for trees and between routines
   dts_t fDTS;                            //! binned residuals

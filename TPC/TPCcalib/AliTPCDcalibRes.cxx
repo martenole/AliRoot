@@ -196,6 +196,11 @@ AliTPCDcalibRes::AliTPCDcalibRes(int run,Long64_t tmin,Long64_t tmax,const char*
   ,fNCl(0)
   ,fQ2Pt(0)
   ,fTgLam(0)
+
+  ,fFileVoxResOut(0x0)
+  ,fTreeVoxResOut(0x0)
+  ,fVoxResOut()
+  ,fVoxResOutPtr(&fVoxResOut)
 {
   SetTMinMax(tmin,tmax);
   for (int i=0;i<kResDim;i++) {
@@ -1627,7 +1632,7 @@ void AliTPCDcalibRes::ProcessResiduals()
 {
   // project local trees, extract distortions
   if (!fInitDone) Init(); //{AliError("Init not done"); return;}
-  LoadStatHistos();
+  //LoadStatHistos();
   AliSysInfo::AddStamp("ProcResid",0,0,0,0);
   //
   for (int is=0;is<kNSect2;is++) ProcessSectorResiduals(is);
@@ -1765,7 +1770,7 @@ void AliTPCDcalibRes::ProcessSectorResiduals(int is)
   //
   fNSmoothingFailedBins[is] = 0;
   //
-  TString sectFileName = Form("%s%d.root",kLocalResFileName,is);
+  TString sectFileName = Form("../data/%s%d.root",kLocalResFileName,is);
   TFile* sectFile = TFile::Open(sectFileName.Data());
   if (!sectFile) AliFatalF("file %s not found",sectFileName.Data());
   TString treeName = Form("ts%d",is);
@@ -1928,6 +1933,7 @@ void AliTPCDcalibRes::ProcessSectorResiduals(int is)
   AliInfoF("Sector%2d. Processed dispersion. Timing: real: %.3f cpu: %.3f",is, sw.RealTime(), sw.CpuTime());
   AliSysInfo::AddStamp("ProcSectRes",is,1,0,0);
   //
+  DumpResults(is);
 }
 //________________________________________________
 void AliTPCDcalibRes::ReProcessResiduals()
@@ -2049,9 +2055,9 @@ void AliTPCDcalibRes::ProcessVoxelResiduals(int np, float* tg, float *dy, float 
   voxRes.dZSigLTM = zres[2];
   //
   // store the statistics
-  ULong64_t binStat = GetBin2Fill(voxRes.bvox,kVoxV);
-  voxRes.stat[kVoxV] = fArrNDStat[voxRes.bsec]->At(binStat);
-  for (int iv=kVoxDim;iv--;) voxRes.stat[iv] = fArrNDStat[voxRes.bsec]->At(binStat+iv-kVoxV);
+  //ULong64_t binStat = GetBin2Fill(voxRes.bvox,kVoxV);
+  //voxRes.stat[kVoxV] = fArrNDStat[voxRes.bsec]->At(binStat);
+  //for (int iv=kVoxDim;iv--;) voxRes.stat[iv] = fArrNDStat[voxRes.bsec]->At(binStat+iv-kVoxV);
   //
   voxRes.flags |= kDistDone;
 }
@@ -4811,4 +4817,26 @@ void AliTPCDcalibRes::SetY2XBinning(int n, float* binning)
       fY2XBinsCenter[i] = binning[i] + fY2XBinsDH[i];
     }
   }
+}
+
+void AliTPCDcalibRes::DumpResults(int iSec)
+{
+  printf("Dumping results for sector %i. Don't forget the call to closeOutputFile() in the end...\n", iSec);
+  if (!fFileVoxResOut) {
+    fFileVoxResOut = new TFile("voxelResultsAliRoot.root", "recreate");
+    fTreeVoxResOut = new TTree("debugTree", "voxel results");
+    fTreeVoxResOut->Branch("voxRes", &fVoxResOutPtr);
+  }
+  for (int i = 0; i < fNGVoxPerSector; ++i) {
+    fVoxResOut = fSectGVoxRes[iSec][i];
+    fTreeVoxResOut->Fill();
+  }
+}
+
+void AliTPCDcalibRes::WriteDebugTree()
+{
+  fFileVoxResOut->cd();
+  fTreeVoxResOut->Write();
+  delete fTreeVoxResOut;
+  fFileVoxResOut->Close();
 }
