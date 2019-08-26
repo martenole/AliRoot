@@ -204,6 +204,7 @@ class AliTPCDcalibRes: public TNamed
 
   const char* GetVoxResFileName() const {return Form("%sTree.root",kResOut);}
 
+  void DumpToFile(int np, const Short_t *data);
   void DumpResults(int iSec);
   void WriteDebugTree();
 
@@ -592,6 +593,9 @@ class AliTPCDcalibRes: public TNamed
   float fArrZTr[kNPadRows];               //! ref tracz Z in sector coordinates
   float fArrTgSlp[kNPadRows];             //! track inclination at padrow
   int   fArrSectID[kNPadRows];            //! cluster sector id
+  // debug
+  std::vector<float> fOutputVector;//!
+  std::vector<float>* fOutputVectorPtr;//!
   //
   static AliTPCDcalibRes* fgUsedInstance; // interface instance to use for parameterization
   static AliTPCDcalibRes* fgUsedInstanceExt; // interface to extra instance if average of 2 maps to be used

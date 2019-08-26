@@ -197,6 +197,9 @@ AliTPCDcalibRes::AliTPCDcalibRes(int run,Long64_t tmin,Long64_t tmax,const char*
   ,fQ2Pt(0)
   ,fTgLam(0)
 
+  ,fOutputVector()
+  ,fOutputVectorPtr(&fOutputVector)
+
   ,fFileVoxResOut(0x0)
   ,fTreeVoxResOut(0x0)
   ,fVoxResOut()
@@ -1872,6 +1875,13 @@ void AliTPCDcalibRes::ProcessSectorResiduals(int is)
   sw.Start(kFALSE);
 
   int nrowOK = ValidateVoxels(is);
+  DumpResults(is);
+  delete[] binArr;
+  delete[] resYArr;
+  delete[] resZArr;
+  delete[] tgslArr;
+  delete[] index;
+  return;
   if (!nrowOK) AliWarningF("Sector%2d: all X-bins disabled, abandon smoothing",is);
   else Smooth0(is);
   //
@@ -4817,6 +4827,20 @@ void AliTPCDcalibRes::SetY2XBinning(int n, float* binning)
       fY2XBinsCenter[i] = binning[i] + fY2XBinsDH[i];
     }
   }
+}
+
+void AliTPCDcalibRes::DumpToFile(int np, const Short_t* data)
+{
+  if (!fFileVoxResOut) {
+    fFileVoxResOut = new TFile("voxelResultsAliRoot.root", "recreate");
+    fTreeVoxResOut = new TTree("debugTree", "voxel results");
+    fTreeVoxResOut->Branch("debug", &fOutputVectorPtr);
+  }
+  fOutputVector.clear();
+  for (int i = 0; i < np; ++i) {
+    fOutputVector.push_back(data[i] * kMaxResid / 0x7fff);
+  }
+  fTreeVoxResOut->Fill();
 }
 
 void AliTPCDcalibRes::DumpResults(int iSec)
