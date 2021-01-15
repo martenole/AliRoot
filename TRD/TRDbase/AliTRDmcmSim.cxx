@@ -25,6 +25,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
+#include <fstream>
 #include <iomanip>
 
 #include "TCanvas.h"
@@ -36,6 +37,8 @@
 #include "TClonesArray.h"
 #include "TMath.h"
 #include <TTree.h>
+#include "TFile.h"
+#include "TString.h"
 
 #include "AliLog.h"
 #include "AliRunLoader.h"
@@ -168,7 +171,7 @@ void AliTRDmcmSim::Init( Int_t det, Int_t robPos, Int_t mcmPos, Bool_t /* newEve
     fFitReg = new FitReg_t[AliTRDfeeParam::GetNadcMcm()];
     memset(fFitReg, 0, AliTRDfeeParam::GetNadcMcm()*sizeof( AliTRDfeeParam::GetNadcMcm() ) );
     fTrackletArray = new TClonesArray("AliTRDtrackletMCM", fgkMaxTracklets);
-    
+
     fMCMT = new UInt_t[fgkMaxTracklets];
   }
 
@@ -2693,3 +2696,62 @@ Bool_t AliTRDmcmSim::ReadPackedConfig(AliTRDtrapConfig *cfg, Int_t hc, UInt_t *d
   AliDebugClass(5, Form("no end marker! %d words read", idx));
   return -err; // only if the max length of the block reached!
 }
+
+void AliTRDmcmSim::DumpToFile() const
+{
+  TString fName = TString::Format("TRAPsimDump_%i_%i_%i", fDetector, fRobPos, fMcmPos);
+  std::ofstream fOut(fName.Data());
+  if (fOut.is_open()) {
+    fOut << "Members of AliTRDmcmSim:" << std::endl;
+    fOut << "fgApplyCut: " << fgApplyCut << std::endl;
+    fOut << "fgAddBaseline: " << fgAddBaseline << std::endl;
+    fOut << "fgStoreClusters: " << fgStoreClusters << std::endl;
+    fOut << "Parameters relevant for pedestal filter:" << std::endl;
+    fOut << "fTrapConfig->GetTrapReg(AliTRDtrapConfig::kFPNP, fDetector, fRobPos, fMcmPos): " << fTrapConfig->GetTrapReg(AliTRDtrapConfig::kFPNP, fDetector, fRobPos, fMcmPos) << std::endl;
+    fOut << "fTrapConfig->GetTrapReg(AliTRDtrapConfig::kFPTC, fDetector, fRobPos, fMcmPos): " << fTrapConfig->GetTrapReg(AliTRDtrapConfig::kFPTC, fDetector, fRobPos, fMcmPos) << std::endl;
+    fOut << "fTrapConfig->GetTrapReg(AliTRDtrapConfig::kFPBY, fDetector, fRobPos, fMcmPos): " << fTrapConfig->GetTrapReg(AliTRDtrapConfig::kFPBY, fDetector, fRobPos, fMcmPos) << std::endl;
+    fOut << "Parameters relevant for gain filter:" << std::endl;
+    fOut << "fTrapConfig->GetTrapReg(AliTRDtrapConfig::kFGBY, fDetector, fRobPos, fMcmPos): " << fTrapConfig->GetTrapReg(AliTRDtrapConfig::kFGBY, fDetector, fRobPos, fMcmPos) << std::endl;
+    fOut << "fTrapConfig->GetTrapReg(AliTRDtrapConfig::TrapReg_t(AliTRDtrapConfig::kFGF0), fDetector, fRobPos, fMcmPos): " << fTrapConfig->GetTrapReg(AliTRDtrapConfig::TrapReg_t(AliTRDtrapConfig::kFGF0), fDetector, fRobPos, fMcmPos) << std::endl;
+    fOut << "fTrapConfig->GetTrapReg(AliTRDtrapConfig::TrapReg_t(AliTRDtrapConfig::kFGA0), fDetector, fRobPos, fMcmPos): " << fTrapConfig->GetTrapReg(AliTRDtrapConfig::TrapReg_t(AliTRDtrapConfig::kFGA0), fDetector, fRobPos, fMcmPos) << std::endl;
+    fOut << "fTrapConfig->GetTrapReg(AliTRDtrapConfig::kFGTA, fDetector, fRobPos, fMcmPos): " << fTrapConfig->GetTrapReg(AliTRDtrapConfig::kFGTA, fDetector, fRobPos, fMcmPos) << std::endl;
+    fOut << "fTrapConfig->GetTrapReg(AliTRDtrapConfig::kFGTB, fDetector, fRobPos, fMcmPos): " << fTrapConfig->GetTrapReg(AliTRDtrapConfig::kFGTB, fDetector, fRobPos, fMcmPos) << std::endl;
+    fOut << "Parameters relevant for tail filter:" << std::endl;
+    fOut << "fTrapConfig->GetTrapReg(AliTRDtrapConfig::kFTAL, fDetector, fRobPos, fMcmPos): " << fTrapConfig->GetTrapReg(AliTRDtrapConfig::kFTAL, fDetector, fRobPos, fMcmPos) << std::endl;
+    fOut << "fTrapConfig->GetTrapReg(AliTRDtrapConfig::kFTLL, fDetector, fRobPos, fMcmPos): " << fTrapConfig->GetTrapReg(AliTRDtrapConfig::kFTLL, fDetector, fRobPos, fMcmPos) << std::endl;
+    fOut << "fTrapConfig->GetTrapReg(AliTRDtrapConfig::kFTLS, fDetector, fRobPos, fMcmPos): " << fTrapConfig->GetTrapReg(AliTRDtrapConfig::kFTLS, fDetector, fRobPos, fMcmPos) << std::endl;
+    fOut << "fTrapConfig->GetTrapReg(AliTRDtrapConfig::kFTBY, fDetector, fRobPos, fMcmPos): " << fTrapConfig->GetTrapReg(AliTRDtrapConfig::kFTBY, fDetector, fRobPos, fMcmPos) << std::endl;
+    fOut << "Parameters relevant for CalcFitreg:" << std::endl;
+    fOut << "fTrapConfig->GetTrapReg(AliTRDtrapConfig::kTPFS, fDetector, fRobPos, fMcmPos): " << fTrapConfig->GetTrapReg(AliTRDtrapConfig::kTPFS, fDetector, fRobPos, fMcmPos) << std::endl;
+    fOut << "fTrapConfig->GetTrapReg(AliTRDtrapConfig::kTPQS0, fDetector, fRobPos, fMcmPos: " << fTrapConfig->GetTrapReg(AliTRDtrapConfig::kTPQS0, fDetector, fRobPos, fMcmPos) << std::endl;
+    fOut << "fTrapConfig->GetTrapReg(AliTRDtrapConfig::kTPQS1, fDetector, fRobPos, fMcmPos): " <<  fTrapConfig->GetTrapReg(AliTRDtrapConfig::kTPQS1, fDetector, fRobPos, fMcmPos)<< std::endl;
+    fOut << "fTrapConfig->GetTrapReg(AliTRDtrapConfig::kTPFE, fDetector, fRobPos, fMcmPos): " << fTrapConfig->GetTrapReg(AliTRDtrapConfig::kTPFE, fDetector, fRobPos, fMcmPos) << std::endl;
+    fOut << "fTrapConfig->GetTrapReg(AliTRDtrapConfig::kTPQE0, fDetector, fRobPos, fMcmPos): " << fTrapConfig->GetTrapReg(AliTRDtrapConfig::kTPQE0, fDetector, fRobPos, fMcmPos) << std::endl;
+    fOut << "fTrapConfig->GetTrapReg(AliTRDtrapConfig::kTPQE1, fDetector, fRobPos, fMcmPos): " << fTrapConfig->GetTrapReg(AliTRDtrapConfig::kTPQE1, fDetector, fRobPos, fMcmPos) << std::endl;
+    fOut << "AliTRDfeeParam::GetNadcMcm(): " << AliTRDfeeParam::GetNadcMcm() << std::endl;
+    fOut << "fTrapConfig->GetTrapReg(AliTRDtrapConfig::kTPVBY, fDetector, fRobPos, fMcmPos): " << fTrapConfig->GetTrapReg(AliTRDtrapConfig::kTPVBY, fDetector, fRobPos, fMcmPos) << std::endl;
+    fOut << "fTrapConfig->GetTrapReg(AliTRDtrapConfig::kTPVT, fDetector, fRobPos, fMcmPos): " << fTrapConfig->GetTrapReg(AliTRDtrapConfig::kTPVT, fDetector, fRobPos, fMcmPos) << std::endl;
+    fOut << "fTrapConfig->GetTrapReg(AliTRDtrapConfig::kTPFP, fDetector, fRobPos, fMcmPos): " << fTrapConfig->GetTrapReg(AliTRDtrapConfig::kTPFP, fDetector, fRobPos, fMcmPos) << std::endl;
+    fOut << "fTrapConfig->GetTrapReg(AliTRDtrapConfig::kTPHT, fDetector, fRobPos, fMcmPos): " << fTrapConfig->GetTrapReg(AliTRDtrapConfig::kTPHT, fDetector, fRobPos, fMcmPos) << std::endl;
+    fOut << "fTrapConfig->GetTrapReg((AliTRDtrapConfig::TrapReg_t) (AliTRDtrapConfig::kTPL00), fDetector, fRobPos, fMcmPos): " << fTrapConfig->GetTrapReg((AliTRDtrapConfig::TrapReg_t) (AliTRDtrapConfig::kTPL00), fDetector, fRobPos, fMcmPos) << std::endl;
+    fOut << "fFeeParam->GetPadRowFromMCM(fRobPos, fMcmPos): " << fFeeParam->GetPadRowFromMCM(fRobPos, fMcmPos) << std::endl;
+    fOut << "Parameters relevant for TrackletSelection:" << std::endl;
+    fOut << "fTrapConfig->GetTrapReg(AliTRDtrapConfig::kTPCL, fDetector, fRobPos, fMcmPos): " << fTrapConfig->GetTrapReg(AliTRDtrapConfig::kTPCL, fDetector, fRobPos, fMcmPos) << std::endl;
+    fOut << "fTrapConfig->GetTrapReg(AliTRDtrapConfig::kTPCT, fDetector, fRobPos, fMcmPos): " << fTrapConfig->GetTrapReg(AliTRDtrapConfig::kTPCT, fDetector, fRobPos, fMcmPos) << std::endl;
+    fOut << "AliTRDfeeParam::Instance()->GetRejectMultipleTracklets(): " << AliTRDfeeParam::Instance()->GetRejectMultipleTracklets() << std::endl;
+    fOut << "Parameters relevant for FitTracklet:" << std::endl;
+    fOut << "AliTRDfeeParam::Instance()->GetUseMisalignCorr(): " << AliTRDfeeParam::Instance()->GetUseMisalignCorr() << std::endl;
+    fOut << "fTrapConfig->GetDmemUnsigned(fgkDmemAddrYcorr, fDetector, fRobPos, fMcmPos): " << fTrapConfig->GetDmemUnsigned(fgkDmemAddrYcorr, fDetector, fRobPos, fMcmPos) << std::endl;
+    fOut << "fTrapConfig->GetDmemUnsigned(fgkDmemAddrDeflCorr, fDetector, fRobPos, fMcmPos): " << fTrapConfig->GetDmemUnsigned(fgkDmemAddrDeflCorr, fDetector, fRobPos, fMcmPos) << std::endl;
+    fOut << "fTrapConfig->GetDmemUnsigned(fgkDmemAddrNdrift, fDetector, fRobPos, fMcmPos): " << fTrapConfig->GetDmemUnsigned(fgkDmemAddrNdrift, fDetector, fRobPos, fMcmPos) << std::endl;
+    fOut << "AliTRDfeeParam::Instance()->GetUseTimeOffset(): " << AliTRDfeeParam::Instance()->GetUseTimeOffset() << std::endl;
+    fOut << "fTrapConfig->GetDmemUnsigned(fgkDmemAddrTimeOffset, fDetector, fRobPos, fMcmPos): " << fTrapConfig->GetDmemUnsigned(fgkDmemAddrTimeOffset, fDetector, fRobPos, fMcmPos) << std::endl;
+    fOut << "fTrapConfig->GetDmemUnsigned(fgkDmemAddrDeflCutStart, fDetector, fRobPos, fMcmPos): " << fTrapConfig->GetDmemUnsigned(fgkDmemAddrDeflCutStart, fDetector, fRobPos, fMcmPos) << std::endl;
+    fOut << "fTrapConfig->GetDmemUnsigned(fgkDmemAddrDeflCutStart + 1, fDetector, fRobPos, fMcmPos): " << fTrapConfig->GetDmemUnsigned(fgkDmemAddrDeflCutStart + 1, fDetector, fRobPos, fMcmPos) << std::endl;
+    //fOut << ": " <<  << std::endl;
+    fOut.close();
+  }
+}
+
+
+// Remember to check:

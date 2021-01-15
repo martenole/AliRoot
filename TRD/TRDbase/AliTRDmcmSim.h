@@ -131,6 +131,7 @@ class AliTRDmcmSim : public TObject {
 	  void PrintPidLutHuman();
 
 	  // I/O
+    void DumpToFile() const;
 	  void PrintFitRegXml(ostream& os) const;
 	  void PrintTrackletsXml(ostream& os) const;
 	  void PrintAdcDatTxt(ostream& os) const;
