@@ -93,11 +93,11 @@ AliTRDdigitizer::AliTRDdigitizer()
   //
   // AliTRDdigitizer default constructor
   //
-  
+
 }
 
 //_____________________________________________________________________________
-AliTRDdigitizer::AliTRDdigitizer(const Text_t *name, const Text_t *title)              
+AliTRDdigitizer::AliTRDdigitizer(const Text_t *name, const Text_t *title)
   :AliDigitizer(name,title)
   ,fRunLoader(0)
   ,fDigitsManager(0)
@@ -269,7 +269,7 @@ void AliTRDdigitizer::Digitize(const Option_t* option)
 
   // The AliRoot file is already connected by the manager
   AliRunLoader *inrl = 0x0;
-  
+
   if (gAlice) {
     AliDebug(1,"AliRun object found on file.");
   }
@@ -282,7 +282,7 @@ void AliTRDdigitizer::Digitize(const Option_t* option)
       return;
     }
   }
-                                                                           
+
   Int_t nInput = fDigInput->GetNinputs();
   fMasks       = new Int_t[nInput];
   for (iInput = 0; iInput < nInput; iInput++) {
@@ -300,7 +300,7 @@ void AliTRDdigitizer::Digitize(const Option_t* option)
     AliLoader *ogime = orl->GetLoader("TRDLoader");
 
     TTree *tree = 0;
-    if (fSDigits) { 
+    if (fSDigits) {
       // If we produce SDigits
       tree = ogime->TreeS();
       if (!tree) {
@@ -320,7 +320,7 @@ void AliTRDdigitizer::Digitize(const Option_t* option)
     MakeBranch(tree);
 
   }
- 
+
   for (iInput = 0; iInput < nInput; iInput++) {
 
     AliDebug(1,Form("Add input stream %d",iInput));
@@ -337,26 +337,26 @@ void AliTRDdigitizer::Digitize(const Option_t* option)
       }
       treees = gime->TreeS();
     }
-    
+
     if (treees == 0x0) {
       AliError(Form("Input stream %d does not exist",iInput));
       return;
-    } 
+    }
 
     // Read the s-digits via digits manager
     sdigitsManager = new AliTRDdigitsManager();
     sdigitsManager->SetSDigits(kTRUE);
-    
+
     AliRunLoader *rl = AliRunLoader::GetRunLoader(fDigInput->GetInputFolderName(iInput));
     AliLoader *gimme = rl->GetLoader("TRDLoader");
-    if (!gimme->TreeS()) 
+    if (!gimme->TreeS())
       {
 	gimme->LoadSDigits();
       }
 
     sdigitsManager->ReadDigits(gimme->TreeS());
-   
-    // Add the s-digits to the input list 
+
+    // Add the s-digits to the input list
     AddSDigitsManager(sdigitsManager);
 
   }
@@ -386,24 +386,24 @@ Bool_t AliTRDdigitizer::Open(const Char_t *file, Int_t nEvent)
   // Opens a ROOT-file with TRD-hits and reads in the hit-tree
   //
   // Connect the AliRoot file containing Geometry, Kine, and Hits
-  //  
+  //
 
   TString evfoldname = AliConfig::GetDefaultEventFolderName();
 
   fRunLoader = AliRunLoader::GetRunLoader(evfoldname);
   if (!fRunLoader) {
     fRunLoader = AliRunLoader::Open(file,evfoldname,"UPDATE");
-  }  
+  }
   if (!fRunLoader) {
     AliError(Form("Can not open session for file %s.",file));
     return kFALSE;
   }
-   
+
   if (!fRunLoader->GetAliRun()) {
     fRunLoader->LoadgAlice();
   }
   gAlice = fRunLoader->GetAliRun();
-  
+
   if (gAlice) {
     AliDebug(1,"AliRun object found on file.");
   }
@@ -419,10 +419,10 @@ Bool_t AliTRDdigitizer::Open(const Char_t *file, Int_t nEvent)
     AliError("Can not get TRD loader from Run Loader");
     return kFALSE;
   }
-  
+
   if (InitDetector()) {
     TTree *tree = 0;
-    if (fSDigits) { 
+    if (fSDigits) {
       // If we produce SDigits
       tree = loader->TreeS();
       if (!tree) {
@@ -453,19 +453,19 @@ Bool_t AliTRDdigitizer::Open(AliRunLoader * const runLoader, Int_t nEvent)
   // Opens a ROOT-file with TRD-hits and reads in the hit-tree
   //
   // Connect the AliRoot file containing Geometry, Kine, and Hits
-  //  
+  //
 
   fRunLoader = runLoader;
   if (!fRunLoader) {
     AliError("RunLoader does not exist");
     return kFALSE;
   }
-   
+
   if (!fRunLoader->GetAliRun()) {
     fRunLoader->LoadgAlice();
   }
   gAlice = fRunLoader->GetAliRun();
-  
+
   if (gAlice) {
     AliDebug(1,"AliRun object found on file.");
   }
@@ -481,10 +481,10 @@ Bool_t AliTRDdigitizer::Open(AliRunLoader * const runLoader, Int_t nEvent)
     AliError("Can not get TRD loader from Run Loader");
     return kFALSE;
   }
-  
+
   if (InitDetector()) {
     TTree *tree = 0;
-    if (fSDigits) { 
+    if (fSDigits) {
       // If we produce SDigits
       tree = loader->TreeS();
       if (!tree) {
@@ -541,7 +541,7 @@ Bool_t AliTRDdigitizer::InitDetector()
   // The list for the input s-digits manager to be merged
   if (fSDigitsManagerList) {
     fSDigitsManagerList->Delete();
-  } 
+  }
   else {
     fSDigitsManagerList = new TList();
   }
@@ -553,7 +553,7 @@ Bool_t AliTRDdigitizer::InitDetector()
 //_____________________________________________________________________________
 Bool_t AliTRDdigitizer::MakeBranch(TTree *tree) const
 {
-  // 
+  //
   // Create the branches for the digits array
   //
 
@@ -629,7 +629,7 @@ Bool_t AliTRDdigitizer::MakeDigits()
     if (nTB < 0) { // Currently -1 gets returned for "undefined" and "mixed",
                    // one might go back to -1 undefined and -2 mixed?
       AliError("No useful DCS information available for this run! Using standard values.");
-      // // We fall back to the standard OCDB object, 
+      // // We fall back to the standard OCDB object,
       // // cache the current run number..
       // Long64_t run = calibration->GetRun();
       // calibration->SetRun(0);
@@ -648,7 +648,7 @@ Bool_t AliTRDdigitizer::MakeDigits()
 
   // Save the values for the raw data headers
   fDigitsManager->GetDigitsParam()->SetADCbaselineAll(AliTRDSimParam::Instance()->GetADCbaseline());
- 
+
   // Sort all hits according to detector number
   if (!SortHits(hits,nhit)) {
     AliError("Sorting hits failed");
@@ -698,13 +698,13 @@ Bool_t AliTRDdigitizer::MakeDigits()
   } // for: detector
 
   if (!fSDigits) {
-    if (AliDataLoader *trklLoader 
+    if (AliDataLoader *trklLoader
           = AliRunLoader::Instance()->GetLoader("TRDLoader")->GetDataLoader("tracklets")) {
       if (trklLoader->Tree())
         trklLoader->WriteData("OVERWRITE");
     }
   }
-    
+
   delete [] hits;
   delete [] nhit;
 
@@ -808,7 +808,7 @@ Bool_t AliTRDdigitizer::SortHits(Float_t **hits, Int_t *nhit)
 
       } // if: charge != 0
 
-      hit = (AliTRDhit *) fTRD->NextHit();   
+      hit = (AliTRDhit *) fTRD->NextHit();
 
     } // for: hits of one track
 
@@ -843,10 +843,10 @@ Bool_t AliTRDdigitizer::ConvertHits(Int_t det
   const Float_t kAmWidth = AliTRDgeometry::AmThick();
   // Width of the drift region
   const Float_t kDrWidth = AliTRDgeometry::DrThick();
-  // Drift + amplification region 
+  // Drift + amplification region
   const Float_t kDrMin   =          - 0.5 * kAmWidth;
   const Float_t kDrMax   = kDrWidth + 0.5 * kAmWidth;
-  
+
   Int_t    iPad          = 0;
   Int_t    dict          = 0;
   Int_t    timeBinTRFend = 1;
@@ -869,30 +869,30 @@ Bool_t AliTRDdigitizer::ConvertHits(Int_t det
   if (!simParam) {
     AliFatal("Could not get simulation parameters");
     return kFALSE;
-  }  
+  }
   if (!calibration) {
-    AliFatal("Could not get calibration object");  
+    AliFatal("Could not get calibration object");
     return kFALSE;
   }
 
   // Get the detector wise calibration objects
   AliTRDCalROC       *calVdriftROC      = 0;
   Float_t             calVdriftDetValue = 0.0;
-  const AliTRDCalDet *calVdriftDet      = calibration->GetVdriftDet();  
+  const AliTRDCalDet *calVdriftDet      = calibration->GetVdriftDet();
   AliTRDCalROC       *calT0ROC          = 0;
   Float_t             calT0DetValue     = 0.0;
-  const AliTRDCalDet *calT0Det          = calibration->GetT0Det();  
+  const AliTRDCalDet *calT0Det          = calibration->GetT0Det();
   Double_t            calExBDetValue    = 0.0;
   const AliTRDCalDet *calExBDet         = calibration->GetExBDet();
 
   if (simParam->TRFOn()) {
-    timeBinTRFend = ((Int_t) (simParam->GetTRFhi() 
+    timeBinTRFend = ((Int_t) (simParam->GetTRFhi()
                   * commonParam->GetSamplingFrequency())) - 1;
   }
 
   Int_t   nTimeTotal   = fDigitsManager->GetDigitsParam()->GetNTimeBins(det);
   Float_t samplingRate = commonParam->GetSamplingFrequency();
-  Float_t elAttachProp = simParam->GetElAttachProp() / 100.0; 
+  Float_t elAttachProp = simParam->GetElAttachProp() / 100.0;
 
   AliTRDpadPlane *padPlane = fGeo->GetPadPlane(det);
   Int_t   layer   = fGeo->GetLayer(det);         //update
@@ -904,10 +904,10 @@ Bool_t AliTRDdigitizer::ConvertHits(Int_t det
   signals->Allocate(nRowMax,nColMax,nTimeTotal);
 
   // Create a new array for the dictionary
-  for (dict = 0; dict < kNdict; dict++) {       
+  for (dict = 0; dict < kNdict; dict++) {
     dictionary[dict] = (AliTRDarrayDictionary *) fDigitsManager->GetDictionary(det,dict);
     dictionary[dict]->Allocate(nRowMax,nColMax,nTimeTotal);
-  }      
+  }
 
   // Loop through the hits in this detector
   for (Int_t hit = 0; hit < nhit; hit++) {
@@ -923,7 +923,7 @@ Bool_t AliTRDdigitizer::ConvertHits(Int_t det
 
     // Find the current volume with the geo manager
     gGeoManager->SetCurrentPoint(pos);
-    gGeoManager->FindNode();      
+    gGeoManager->FindNode();
     if (strstr(gGeoManager->GetPath(),"/UK")) {
       inDrift = 0;
     }
@@ -943,7 +943,7 @@ Bool_t AliTRDdigitizer::ConvertHits(Int_t det
     if (inDrift) {
       // Relative to middle of amplification region
       loc[2] = loc[2] - kDrWidth/2.0 - kAmWidth/2.0;
-    } 
+    }
 
     // The driftlength [cm] (w/o diffusion yet !).
     // It is negative if the hit is between pad plane and anode wires.
@@ -974,7 +974,7 @@ Bool_t AliTRDdigitizer::ConvertHits(Int_t det
     Double_t offsetTilt   = padPlane->GetTiltOffset(rowOffset);
     Int_t    colE         = padPlane->GetPadColNumber(loc[0]+offsetTilt);
     if (colE < 0) {
-      continue;	  
+      continue;
     }
     Double_t colOffset    = 0.0;
 
@@ -992,13 +992,13 @@ Bool_t AliTRDdigitizer::ConvertHits(Int_t det
 
       // Now the real local coordinate system of the ROC
       // column direction: locC
-      // row direction:    locR 
+      // row direction:    locR
       // time direction:   locT
       // locR and locC are identical to the coordinates of the corresponding
       // volumina of the drift or amplification region.
       // locT is defined relative to the wire plane (i.e. middle of amplification
       // region), meaning locT = 0, and is negative for hits coming from the
-      // drift region. 
+      // drift region.
       Double_t locC = loc[0];
       Double_t locR = loc[1];
       Double_t locT = loc[2];
@@ -1009,7 +1009,7 @@ Bool_t AliTRDdigitizer::ConvertHits(Int_t det
           continue;
         }
       }
-          
+
       // Apply the diffusion smearing
       if (simParam->DiffusionOn()) {
         if (!(Diffusion(driftvelocity,absdriftlength,calExBDetValue,locR,locC,locT))) {
@@ -1031,7 +1031,7 @@ Bool_t AliTRDdigitizer::ConvertHits(Int_t det
       // The pad column (rphi-direction)
       offsetTilt = padPlane->GetTiltOffset(rowOffset);
       colE       = padPlane->GetPadColNumber(locC+offsetTilt);
-      if (colE < 0) continue;         
+      if (colE < 0) continue;
       colOffset  = padPlane->GetPadColOffset(colE,locC+offsetTilt);
 
       // Also re-retrieve drift velocity because col and row may have changed
@@ -1052,7 +1052,7 @@ Bool_t AliTRDdigitizer::ConvertHits(Int_t det
         // Use drift time map (GARFIELD)
         drifttime = commonParam->TimeStruct(driftvelocity,0.5*kAmWidth-1.0*locT,zz)
                   + hittime;
-      } 
+      }
       else {
 	// Use constant drift velocity
         drifttime = TMath::Abs(locT) / driftvelocity
@@ -1066,9 +1066,9 @@ Bool_t AliTRDdigitizer::ConvertHits(Int_t det
       } while (ggRndm <= 0);
       Double_t signal = -(simParam->GetGasGain()) * TMath::Log(ggRndm);
 
-      // Apply the pad response 
+      // Apply the pad response
       if (simParam->PRFOn()) {
-        // The distance of the electron to the center of the pad 
+        // The distance of the electron to the center of the pad
         // in units of pad width
         Double_t dist = (colOffset - 0.5*padPlane->GetColSize(colE))
                       / padPlane->GetColSize(colE);
@@ -1084,15 +1084,15 @@ Bool_t AliTRDdigitizer::ConvertHits(Int_t det
 
       // The time bin (always positive), with t0 distortion
       Double_t timeBinIdeal = drifttime * samplingRate + t0;
-      // Protection 
+      // Protection
       if (TMath::Abs(timeBinIdeal) > 2*nTimeTotal) {
         timeBinIdeal = 2 * nTimeTotal;
       }
       Int_t    timeBinTruncated = ((Int_t) timeBinIdeal);
       // The distance of the position to the middle of the timebin
-      Double_t timeOffset       = ((Float_t) timeBinTruncated 
+      Double_t timeOffset       = ((Float_t) timeBinTruncated
                                 + 0.5 - timeBinIdeal) / samplingRate;
-          
+
       // Sample the time response inside the drift region
       // + additional time bins before and after.
       // The sampling is done always in the middle of the time bin
@@ -1127,12 +1127,12 @@ Bool_t AliTRDdigitizer::ConvertHits(Int_t det
 
           if (colPos != colE) {
 	    // Cross talk added to non-central pads
-            signalOld[iPad] += padSignal[iPad] 
+            signalOld[iPad] += padSignal[iPad]
 	                     * (timeResponse + crossTalk);
-          } 
+          }
           else {
 	    // W/o cross talk at central pad
-            signalOld[iPad] += padSignal[iPad] 
+            signalOld[iPad] += padSignal[iPad]
 	                     * timeResponse;
           }
 
@@ -1141,9 +1141,9 @@ Bool_t AliTRDdigitizer::ConvertHits(Int_t det
           // Store the track index in the dictionary
           // Note: We store index+1 in order to allow the array to be compressed
 	  // Note2: Taking out the +1 in track
-          if (signalOld[iPad] > 0.0) { 
+          if (signalOld[iPad] > 0.0) {
             for (dict = 0; dict < kNdict; dict++) {
-	      Int_t oldTrack = dictionary[dict]->GetData(rowE,colPos,iTimeBin); 
+	      Int_t oldTrack = dictionary[dict]->GetData(rowE,colPos,iTimeBin);
 	      if (oldTrack == track) break;
 	      if (oldTrack ==  -1 ) {
 		dictionary[dict]->SetData(rowE,colPos,iTimeBin,track);
@@ -1216,22 +1216,22 @@ Bool_t AliTRDdigitizer::Signal2ADC(Int_t det, AliTRDarraySignal *signals)
   if (!simParam) {
     AliFatal("Could not get simulation parameters");
     return kFALSE;
-  }  
+  }
 
   // Converts number of electrons to fC
-  const Double_t kEl2fC = 1.602e-19 * 1.0e15; 
+  const Double_t kEl2fC = 1.602e-19 * 1.0e15;
 
   // Coupling factor
-  Double_t coupling     = simParam->GetPadCoupling() 
+  Double_t coupling     = simParam->GetPadCoupling()
                         * simParam->GetTimeCoupling();
   // Electronics conversion factor
-  Double_t convert      = kEl2fC 
+  Double_t convert      = kEl2fC
                         * simParam->GetChipGain();
   // ADC conversion factor
   Double_t adcConvert   = simParam->GetADCoutRange()
                         / simParam->GetADCinRange();
   // The electronics baseline in mV
-  Double_t baseline     = simParam->GetADCbaseline() 
+  Double_t baseline     = simParam->GetADCbaseline()
                         / adcConvert;
   // The electronics baseline in electrons
   Double_t baselineEl   = baseline
@@ -1253,7 +1253,7 @@ Bool_t AliTRDdigitizer::Signal2ADC(Int_t det, AliTRDarraySignal *signals)
   }
 
   // The gain factor calibration objects
-  const AliTRDCalDet *calGainFactorDet      = calibration->GetGainFactorDet();  
+  const AliTRDCalDet *calGainFactorDet      = calibration->GetGainFactorDet();
   AliTRDCalROC       *calGainFactorROC      = 0x0;
   Float_t             calGainFactorDetValue = 0.0;
 
@@ -1265,11 +1265,11 @@ Bool_t AliTRDdigitizer::Signal2ADC(Int_t det, AliTRDarraySignal *signals)
   }
   if (signals->HasData()) {
     // Expand the container if neccessary
-    signals->Expand();   
+    signals->Expand();
   }
   else {
     // Create missing containers
-    signals->Allocate(nRowMax,nColMax,nTimeTotal);      
+    signals->Allocate(nRowMax,nColMax,nTimeTotal);
   }
 
   // Get the container for the digits of this detector
@@ -1296,18 +1296,18 @@ Bool_t AliTRDdigitizer::Signal2ADC(Int_t det, AliTRDarraySignal *signals)
       Int_t iMcm            = (Int_t)(col/18); // current group of 18 col pads
       Int_t halfchamberside = (iMcm>3 ? 1 : 0); // 0=Aside, 1=Bside
       // Halfchambers that are switched off, masked by calibration
-      if (calibration->IsHalfChamberNoData(det, halfchamberside)) 
+      if (calibration->IsHalfChamberNoData(det, halfchamberside))
 	continue;
 
       // Check whether pad is masked
       // Bridged pads are not considered yet!!!
-      if (calibration->IsPadMasked(det,col,row) || 
+      if (calibration->IsPadMasked(det,col,row) ||
           calibration->IsPadNotConnected(det,col,row)) {
         continue;
       }
 
       // The gain factors
-      Float_t padgain    = calGainFactorDetValue 
+      Float_t padgain    = calGainFactorDetValue
                          * calGainFactorROC->GetValue(col,row);
       if (padgain <= 0) {
         AliError(Form("Not a valid gain %f, %d %d %d",padgain,det,col,row));
@@ -1433,22 +1433,22 @@ Bool_t AliTRDdigitizer::Digits2SDigits(AliTRDdigitsManager * const manDig
   if (!simParam) {
     AliFatal("Could not get simulation parameters");
     return kFALSE;
-  }  
+  }
 
   // Converts number of electrons to fC
-  const Double_t kEl2fC = 1.602e-19 * 1.0e15; 
+  const Double_t kEl2fC = 1.602e-19 * 1.0e15;
 
   // Coupling factor
-  Double_t coupling     = simParam->GetPadCoupling() 
+  Double_t coupling     = simParam->GetPadCoupling()
                         * simParam->GetTimeCoupling();
   // Electronics conversion factor
-  Double_t convert      = kEl2fC 
+  Double_t convert      = kEl2fC
                         * simParam->GetChipGain();
   // ADC conversion factor
   Double_t adcConvert   = simParam->GetADCoutRange()
                         / simParam->GetADCinRange();
   // The electronics baseline in mV
-  Double_t baseline     = simParam->GetADCbaseline() 
+  Double_t baseline     = simParam->GetADCbaseline()
                         / adcConvert;
   // The electronics baseline in electrons
   //Double_t baselineEl   = baseline
@@ -1456,7 +1456,7 @@ Bool_t AliTRDdigitizer::Digits2SDigits(AliTRDdigitsManager * const manDig
 
   // The gainfactor calibration objects
   // Not used since these digits are supposed to be from real raw data
-  //const AliTRDCalDet *calGainFactorDet      = calibration->GetGainFactorDet();  
+  //const AliTRDCalDet *calGainFactorDet      = calibration->GetGainFactorDet();
   //AliTRDCalROC       *calGainFactorROC      = 0;
   //Float_t             calGainFactorDetValue = 0.0;
 
@@ -1505,7 +1505,7 @@ Bool_t AliTRDdigitizer::Digits2SDigits(AliTRDdigitsManager * const manDig
         for (col  = 0; col  <  nColMax; col++ ) {
 
           // The gain factors
-          //Float_t padgain = calGainFactorDetValue 
+          //Float_t padgain = calGainFactorDetValue
           //                * calGainFactorROC->GetValue(col,row);
 
           for (time = 0; time < nTimeTotal; time++) {
@@ -1532,7 +1532,7 @@ Bool_t AliTRDdigitizer::Digits2SDigits(AliTRDdigitsManager * const manDig
 
         } // for: col
       } // for: row
-  
+
     } // if: has data
 
     sdigits->Compress(0);
@@ -1542,7 +1542,7 @@ Bool_t AliTRDdigitizer::Digits2SDigits(AliTRDdigitsManager * const manDig
 
     // No compress just remove
     manDig->RemoveDigits(det);
-    manDig->RemoveDictionaries(det);      
+    manDig->RemoveDictionaries(det);
 
   } // for: det
 
@@ -1583,13 +1583,13 @@ Bool_t AliTRDdigitizer::MergeSDigits()
     AliFatal("Could not get simulation parameters");
     return kFALSE;
   }
-  
+
   AliTRDcalibDB     *calibration = AliTRDcalibDB::Instance();
   if (!calibration) {
     AliFatal("Could not get calibration object");
     return kFALSE;
   }
-  
+
   Int_t iDict = 0;
   Int_t jDict = 0;
 
@@ -1601,7 +1601,7 @@ Bool_t AliTRDdigitizer::MergeSDigits()
   AliTRDdigitsManager   *mergeSDigitsManager = 0x0;
   // Get the first s-digits
   fSDigitsManager = (AliTRDdigitsManager *) fSDigitsManagerList->First();
-  if (!fSDigitsManager) { 
+  if (!fSDigitsManager) {
     AliError("No SDigits manager");
     return kFALSE;
   }
@@ -1615,7 +1615,7 @@ Bool_t AliTRDdigitizer::MergeSDigits()
   else {
     AliDebug(1,"Only one input file.");
   }
-  
+
   Int_t iMerge = 0;
 
   while (mergeSDigitsManager) {
@@ -1636,39 +1636,39 @@ Bool_t AliTRDdigitizer::MergeSDigits()
 
       Int_t nRowMax = fGeo->GetPadPlane(iDet)->GetNrows();
       Int_t nColMax = fGeo->GetPadPlane(iDet)->GetNcols();
-	  
+
       // Loop through the pixels of one detector and add the signals
-      digitsA = (AliTRDarraySignal *) fSDigitsManager->GetSDigits(iDet);    
-      digitsB = (AliTRDarraySignal *) mergeSDigitsManager->GetSDigits(iDet); 
-      digitsA->Expand();  
+      digitsA = (AliTRDarraySignal *) fSDigitsManager->GetSDigits(iDet);
+      digitsB = (AliTRDarraySignal *) mergeSDigitsManager->GetSDigits(iDet);
+      digitsA->Expand();
       if (!digitsA->HasData()) continue;
-      digitsB->Expand();    
+      digitsB->Expand();
       if (!digitsB->HasData()) continue;
-	  
+
       for (iDict = 0; iDict < kNDict; iDict++) {
 	dictionaryA[iDict] = (AliTRDarrayDictionary *) fSDigitsManager->GetDictionary(iDet,iDict);
 	dictionaryB[iDict] = (AliTRDarrayDictionary *) mergeSDigitsManager->GetDictionary(iDet,iDict);
-	dictionaryA[iDict]->Expand();  
+	dictionaryA[iDict]->Expand();
         dictionaryB[iDict]->Expand();
       }
 
       // Merge only detectors that contain a signal
       Bool_t doMerge = kTRUE;
       if (fMergeSignalOnly) {
-        if (digitsA->GetOverThreshold(0) == 0) {                             
+        if (digitsA->GetOverThreshold(0) == 0) {
 	  doMerge = kFALSE;
 	}
       }
-	  
+
       if (doMerge) {
-	      
+
 	AliDebug(1,Form("Merge detector %d of input no.%d",iDet,iMerge+1));
-	      
+
 	for (Int_t iRow  = 0; iRow  <  nRowMax;   iRow++ ) {
 	  for (Int_t iCol  = 0; iCol  <  nColMax;   iCol++ ) {
 	    for (Int_t iTime = 0; iTime < nTimeTotal; iTime++) {
-         	
-	      // Add the amplitudes of the summable digits 
+
+	      // Add the amplitudes of the summable digits
 	      Float_t ampA = digitsA->GetData(iRow,iCol,iTime);
 	      Float_t ampB = digitsB->GetData(iRow,iCol,iTime);
 	      ampA += ampB;
@@ -1679,7 +1679,7 @@ Bool_t AliTRDdigitizer::MergeSDigits()
 		Int_t trackB = dictionaryB[iDict]->GetData(iRow,iCol,iTime);
 	        if ((fMasks) && (trackB >= 0))  {
 		  for (jDict = 0; jDict < kNDict; jDict++) { //RS: find 1s free slot for this channel
-		    Int_t trackA = dictionaryA[jDict]->GetData(iRow,iCol,iTime); 
+		    Int_t trackA = dictionaryA[jDict]->GetData(iRow,iCol,iTime);
 		    if (trackA == -1) {
 		      dictionaryA[jDict]->SetData(iRow,iCol,iTime,trackB+fMasks[iMerge]);
 		      break;
@@ -1696,21 +1696,21 @@ Bool_t AliTRDdigitizer::MergeSDigits()
 
       mergeSDigitsManager->RemoveDigits(iDet);
       mergeSDigitsManager->RemoveDictionaries(iDet);
-  
+
       if (fCompress) {
-        digitsA->Compress(0); 
-        for (iDict = 0; iDict < kNDict; iDict++) {                                     
+        digitsA->Compress(0);
+        for (iDict = 0; iDict < kNDict; iDict++) {
 	  dictionaryA[iDict]->Compress();
         }
       }
-      
-    } // for: detectors    
-      
+
+    } // for: detectors
+
     // The next set of s-digits
     mergeSDigitsManager = (AliTRDdigitsManager *) fSDigitsManagerList->After(mergeSDigitsManager);
-    
+
   } // while: mergeDigitsManagers
-  
+
   return kTRUE;
 
 }
@@ -1738,7 +1738,7 @@ Bool_t AliTRDdigitizer::ConvertSDigits()
       AliDebug(2,Form("No digits for det=%d",det));
       continue;
     }
-    
+
     // Convert the merged sdigits to digits
     if (!Signal2ADC(det,digitsIn)) {
       continue;
@@ -1749,7 +1749,7 @@ Bool_t AliTRDdigitizer::ConvertSDigits()
       continue;
     }
 
-    // Delete 
+    // Delete
     fSDigitsManager->RemoveDigits(det);
     fSDigitsManager->RemoveDictionaries(det);
 
@@ -1823,9 +1823,9 @@ Bool_t AliTRDdigitizer::CopyDictionary(Int_t det)
 	} // for: time
       } // for: col
     } // for: row
-    
+
   } // for: dictionaries
-  
+
   return kTRUE;
 
 }
@@ -1843,13 +1843,13 @@ void AliTRDdigitizer::CompressOutputArrays(Int_t det)
   if (fCompress) {
 
     if (!fSDigits) {
-      AliTRDarrayADC *digits = 0x0;  
+      AliTRDarrayADC *digits = 0x0;
       digits = (AliTRDarrayADC *) fDigitsManager->GetDigits(det);
       digits->Compress();
     }
 
     if (fSDigits) {
-      AliTRDarraySignal *digits = 0x0; 
+      AliTRDarraySignal *digits = 0x0;
       digits = (AliTRDarraySignal *) fDigitsManager->GetSDigits(det);
       digits->Compress(0);
     }
@@ -1886,10 +1886,10 @@ void AliTRDdigitizer::InitOutput(Int_t iEvent)
   //
 
   fEvent = iEvent;
-   
+
   if (!fRunLoader) {
     AliError("Run Loader is NULL");
-    return;  
+    return;
   }
 
   AliLoader *loader = fRunLoader->GetLoader("TRDLoader");
@@ -1899,8 +1899,8 @@ void AliTRDdigitizer::InitOutput(Int_t iEvent)
   }
 
   TTree *tree = 0;
-  
-  if (fSDigits) { 
+
+  if (fSDigits) {
     // If we produce SDigits
     tree = loader->TreeS();
     if (!tree) {
@@ -1920,7 +1920,7 @@ void AliTRDdigitizer::InitOutput(Int_t iEvent)
   fDigitsManager->MakeBranch(tree);
 
 }
-  
+
 //_____________________________________________________________________________
 Int_t AliTRDdigitizer::Diffusion(Float_t vdrift, Double_t absdriftlength
                                , Double_t exbvalue
@@ -1930,7 +1930,7 @@ Int_t AliTRDdigitizer::Diffusion(Float_t vdrift, Double_t absdriftlength
   // Applies the diffusion smearing to the position of a single electron.
   // Depends on absolute drift length.
   //
-  
+
   Float_t diffL = 0.0;
   Float_t diffT = 0.0;
 
@@ -1959,7 +1959,7 @@ Int_t AliTRDdigitizer::Diffusion(Float_t vdrift, Double_t absdriftlength
   }
 
 }
-  
+
 //_____________________________________________________________________________
 void AliTRDdigitizer::RunDigitalProcessing(Int_t det)
 {
@@ -1973,7 +1973,7 @@ void AliTRDdigitizer::RunDigitalProcessing(Int_t det)
   if (!digits)
     return;
 
-  //Call the methods in the mcm class using the temporary array as input  
+  //Call the methods in the mcm class using the temporary array as input
   // process the data in the same order as in hardware
   for (Int_t side = 0; side <= 1; side++) {
     for(Int_t rob = side; rob < digits->GetNrow() / 2; rob += 2) {
@@ -1982,6 +1982,7 @@ void AliTRDdigitizer::RunDigitalProcessing(Int_t det)
 	fMcmSim->SetDataByPad(digits, fDigitsManager);
 	fMcmSim->Filter();
 	if (feeParam->GetTracklet()) {
+    fMcmSim->DumpADCF();
 	  fMcmSim->Tracklet();
 	  fMcmSim->StoreTracklets();
 	}
@@ -1991,4 +1992,3 @@ void AliTRDdigitizer::RunDigitalProcessing(Int_t det)
     }
   }
 }
-

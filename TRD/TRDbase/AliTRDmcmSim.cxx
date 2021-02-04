@@ -78,6 +78,8 @@ AliTRDmcmSim::AliTRDmcmSim() :
   fMCMT(NULL),
   fTrackletArray(NULL),
   fZSMap(NULL),
+  fTreeOut(NULL),
+  fFileOut(NULL),
   fTrklBranchName("mcmtrklbranch"),
   fFeeParam(NULL),
   fTrapConfig(NULL),
@@ -130,6 +132,7 @@ AliTRDmcmSim::~AliTRDmcmSim()
 
     fTrackletArray->Delete();
     delete fTrackletArray;
+    CloseOutputFile();
   }
 }
 
@@ -143,6 +146,9 @@ void AliTRDmcmSim::Init( Int_t det, Int_t robPos, Int_t mcmPos, Bool_t /* newEve
   if (!fInitialized) {
     fFeeParam      = AliTRDfeeParam::Instance();
     fTrapConfig    = AliTRDcalibDB::Instance()->GetTrapConfig();
+    fFileOut = new TFile("TRAPsimDump.root", "RECREATE");
+    fTreeOut = new TTree("treeOut", "Filtered ADC data in MCM sim");
+    fTreeOut->Branch("data", &fData, "det/I:rob/I:mcm/I:adc[630]/I");
   }
 
   fDetector      = det;
@@ -2699,7 +2705,7 @@ Bool_t AliTRDmcmSim::ReadPackedConfig(AliTRDtrapConfig *cfg, Int_t hc, UInt_t *d
 
 void AliTRDmcmSim::DumpToFile() const
 {
-  TString fName = TString::Format("TRAPsimDump_%i_%i_%i", fDetector, fRobPos, fMcmPos);
+  TString fName = TString::Format("TRAPsimDump_%i_%i_%i.txt", fDetector, fRobPos, fMcmPos);
   std::ofstream fOut(fName.Data());
   if (fOut.is_open()) {
     fOut << "Members of AliTRDmcmSim:" << std::endl;
@@ -2753,5 +2759,30 @@ void AliTRDmcmSim::DumpToFile() const
   }
 }
 
+void AliTRDmcmSim::DumpADCF()
+{
+  fData.det  = fDetector;
+  fData.rob = fRobPos;
+  fData.mcm = fMcmPos;
+  for (int i=0; i<AliTRDfeeParam::GetNadcMcm(); ++i) {
+    for (int j=0; j<fNTimeBin; ++j) {
+      if (i >= 21 || j >= 30) {
+        std::cout << "ERROR: wrong dimension for filtered ADC values" << std::endl;
+        continue;
+      }
+      fData.adc[fNTimeBin * i + j] = fADCF[i][j];
+    }
+  }
+  fTreeOut->Fill();
+}
+
+void AliTRDmcmSim::CloseOutputFile()
+{
+  fFileOut->cd();
+  fTreeOut->Write();
+  delete fTreeOut;
+  fFileOut->Close();
+  delete fFileOut;
+}
 
 // Remember to check:

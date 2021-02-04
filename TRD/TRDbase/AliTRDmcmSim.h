@@ -16,6 +16,8 @@
 class TObject;
 class TClonesArray;
 class TH2F;
+class TTree;
+class TFile;
 
 class AliRunLoader;
 class AliTRDfeeParam;
@@ -132,6 +134,8 @@ class AliTRDmcmSim : public TObject {
 
 	  // I/O
     void DumpToFile() const;
+    void DumpADCF();
+    void CloseOutputFile();
 	  void PrintFitRegXml(ostream& os) const;
 	  void PrintTrackletsXml(ostream& os) const;
 	  void PrintAdcDatTxt(ostream& os) const;
@@ -186,6 +190,14 @@ class AliTRDmcmSim : public TObject {
 	  UInt_t   *fMCMT;                              // tracklet word for one mcm/trap-chip
 	  TClonesArray *fTrackletArray;                 // Array of AliTRDtrackletMCM which contains MC information in addition to the tracklet word
 	  Int_t    *fZSMap;                             // Zero suppression map (1 dimensional projection)
+
+    TTree* fTreeOut;
+    TFile* fFileOut;
+    typedef struct {
+      Int_t det, rob, mcm;
+      Int_t adc[630]; // dimension: AliTRDfeeParam::GetNadcMcm() * fNTimeBin
+    } Data;
+    Data fData;
 
 	  Int_t     fFitPtr[fgkNCPU];                   // pointer to the tracklet to be calculated by CPU i
 
